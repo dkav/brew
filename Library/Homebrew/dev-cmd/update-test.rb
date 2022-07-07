@@ -113,6 +113,12 @@ module Homebrew
       # set test copy to start_commit
       safe_system "git", "reset", "--hard", start_commit
 
+      # write latesttag
+      latest_tag = Utils.safe_popen_read(
+        "git", "tag", "--list", "--sort=-version:refname", "--merged"
+      ).lines.first.chomp
+      safe_system "git", "config", "--local", "homebrew.latesttag", latest_tag
+
       # update ENV["PATH"]
       ENV["PATH"] = PATH.new(ENV.fetch("PATH")).prepend(curdir/"bin")
 
